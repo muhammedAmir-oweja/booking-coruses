@@ -1,0 +1,219 @@
+/* Remove default Vite styles — AdminLTE handles everything */
+body {
+  font-family: 'Source Sans Pro', sans-serif;
+}
+
+#root {
+  /* Let AdminLTE's .wrapper control layout — reset Vite defaults */
+  width: auto;
+  max-width: none;
+  margin: 0;
+  text-align: left;
+  border: none;
+  min-height: auto;
+  display: block;
+}
+
+/* Gap utility for older Bootstrap 4 */
+.gap-2 {
+  gap: 0.5rem;
+}
+
+/* ---------------------------------------------------------------- RTL ---
+   Arabic needs its own family; Source Sans Pro has no Arabic glyphs and the
+   browser falls back to something that does not match the rest of the chrome. */
+html[dir='rtl'] body,
+html[lang='ar'] body {
+  font-family: 'IBM Plex Sans Arabic', 'Source Sans Pro', sans-serif;
+  line-height: 1.8;              /* Arabic sits taller than Latin */
+}
+
+/* AdminLTE's fixed sidebar is positioned left in px, so mirror the shell. */
+html[dir='rtl'] .main-sidebar { right: 0; left: auto; }
+
+/* These offsets have to be gated exactly like the LTR rules they mirror.
+   AdminLTE only applies the 250px shell offset from 768px up; ungated, RTL
+   pushed the content 250px on every viewport, so Arabic on a 375px phone had
+   125px of usable width - a gutter LTR never had. */
+@media (min-width: 768px) {
+  html[dir='rtl'] .content-wrapper,
+  html[dir='rtl'] .main-header,
+  html[dir='rtl'] .main-footer { margin-right: 250px; margin-left: 0; }
+
+  /* AdminLTE's mini offset is `margin-left: 4.6rem !important`, and !important
+     beats this rule's higher specificity, so the mirror needs !important too -
+     otherwise the collapsed RTL shell keeps a 4.6rem gutter on the left as
+     well as the intended one on the right. */
+  html[dir='rtl'] .sidebar-collapse .content-wrapper,
+  html[dir='rtl'] .sidebar-collapse .main-header,
+  html[dir='rtl'] .sidebar-collapse .main-footer { margin-right: 4.6rem; margin-left: 0 !important; }
+}
+
+/* The off-canvas drawer, mirrored. AdminLTE parks the sidebar with
+   `margin-left: -250px`, which is inert once the sidebar is pinned with
+   `right: 0; left: auto`: with `left` auto and `right` fixed, margin-left only
+   changes the computed left and the right edge stays flush, so the box never
+   moves. RTL therefore needs the same move expressed on the other side - without
+   this the drawer is simply always open on an Arabic phone, sitting on top of
+   the content. */
+@media (max-width: 767.98px) {
+  html[dir='rtl'] .main-sidebar {
+    margin-right: -250px;
+    transition: margin-right .3s ease-in-out, width .3s ease-in-out;
+  }
+  html[dir='rtl'] .sidebar-open .main-sidebar { margin-right: 0; }
+}
+
+/* AdminLTE sidebar internal layout — physical padding and margins */
+html[dir='rtl'] .brand-link { padding-right: .825rem; padding-left: 0; }
+html[dir='rtl'] .brand-link .brand-image { margin-left: .8rem; margin-right: 0; float: right; }
+html[dir='rtl'] .sidebar .user-panel .image { padding-right: .8rem; padding-left: 0; }
+html[dir='rtl'] .sidebar .user-panel .info  { padding-right: .5rem; padding-left: 0; }
+html[dir='rtl'] .nav-sidebar .nav-link      { padding-right: .75rem; padding-left: .75rem; }
+html[dir='rtl'] .nav-sidebar .nav-icon      { margin-left: .2rem; margin-right: 0; }
+html[dir='rtl'] .nav-sidebar .nav-treeview  { padding-right: 1rem; padding-left: 0; }
+
+/* #root resets text-align: left for LTR; mirror it rather than overriding
+   every child. */
+html[dir='rtl'] #root { text-align: right; }
+
+/* Icons that encode a direction have to flip; a bell or a book must not. */
+html[dir='rtl'] .fa-chevron-right,
+html[dir='rtl'] .fa-chevron-left,
+html[dir='rtl'] .fa-arrow-right,
+html[dir='rtl'] .fa-arrow-left,
+html[dir='rtl'] .fa-arrow-circle-right,
+html[dir='rtl'] .fa-arrow-circle-left,
+html[dir='rtl'] .fa-sign-out-alt,
+html[dir='rtl'] .fa-long-arrow-alt-right,
+html[dir='rtl'] .fa-long-arrow-alt-left { transform: scaleX(-1); }
+
+/* Numbers, money, emails and dates stay LTR inside an RTL paragraph. Opt in
+   with .text-ltr - deliberately NOT a blanket .badge rule, because status
+   badges carry translated words ("مؤكد"), not numbers. */
+html[dir='rtl'] .text-ltr,
+html[dir='rtl'] td.num { direction: ltr; unicode-bidi: embed; }
+
+/* Bootstrap 4 float utilities are physical and AdminLTE leans on them. */
+html[dir='rtl'] .float-right { float: left !important; }
+html[dir='rtl'] .float-left { float: right !important; }
+
+/* The RESPONSIVE float utilities need mirroring too, and mirroring only the
+   unqualified pair is what made every breadcrumb look wrong in Arabic: all four
+   of them use `float-sm-right`, so they kept floating to the physical right -
+   the INNER edge of their column in RTL - while the LTR layout hugs the outer
+   edge. The crumb ended up stranded mid-header with a gap beside it.
+
+   These have to sit inside the same media queries Bootstrap declares them in.
+   Unconditionally they would force a float below the breakpoint, where
+   Bootstrap sets none at all. md/lg/xl are unused today and included anyway:
+   mirroring half a utility set is the trap that produced this bug. */
+@media (min-width: 576px) {
+  html[dir='rtl'] .float-sm-right { float: left !important; }
+  html[dir='rtl'] .float-sm-left  { float: right !important; }
+}
+@media (min-width: 768px) {
+  html[dir='rtl'] .float-md-right { float: left !important; }
+  html[dir='rtl'] .float-md-left  { float: right !important; }
+}
+@media (min-width: 992px) {
+  html[dir='rtl'] .float-lg-right { float: left !important; }
+  html[dir='rtl'] .float-lg-left  { float: right !important; }
+}
+@media (min-width: 1200px) {
+  html[dir='rtl'] .float-xl-right { float: left !important; }
+  html[dir='rtl'] .float-xl-left  { float: right !important; }
+}
+html[dir='rtl'] .text-right { text-align: left !important; }
+html[dir='rtl'] .text-left { text-align: right !important; }
+html[dir='rtl'] .ml-1 { margin-left: 0 !important; margin-right: .25rem !important; }
+html[dir='rtl'] .mr-1 { margin-right: 0 !important; margin-left: .25rem !important; }
+html[dir='rtl'] .ml-2 { margin-left: 0 !important; margin-right: .5rem !important; }
+html[dir='rtl'] .mr-2 { margin-right: 0 !important; margin-left: .5rem !important; }
+html[dir='rtl'] .ml-3 { margin-left: 0 !important; margin-right: 1rem !important; }
+html[dir='rtl'] .mr-3 { margin-right: 0 !important; margin-left: 1rem !important; }
+html[dir='rtl'] .ml-4 { margin-left: 0 !important; margin-right: 1.5rem !important; }
+html[dir='rtl'] .mr-4 { margin-right: 0 !important; margin-left: 1.5rem !important; }
+html[dir='rtl'] .ml-5 { margin-left: 0 !important; margin-right: 3rem !important; }
+html[dir='rtl'] .mr-5 { margin-right: 0 !important; margin-left: 3rem !important; }
+html[dir='rtl'] .ml-auto { margin-left: 0 !important; margin-right: auto !important; }
+html[dir='rtl'] .mr-auto { margin-right: 0 !important; margin-left: auto !important; }
+
+/* Padding physical utilities */
+html[dir='rtl'] .pl-1 { padding-left: 0 !important; padding-right: .25rem !important; }
+html[dir='rtl'] .pr-1 { padding-right: 0 !important; padding-left: .25rem !important; }
+html[dir='rtl'] .pl-2 { padding-left: 0 !important; padding-right: .5rem !important; }
+html[dir='rtl'] .pr-2 { padding-right: 0 !important; padding-left: .5rem !important; }
+html[dir='rtl'] .pl-3 { padding-left: 0 !important; padding-right: 1rem !important; }
+html[dir='rtl'] .pr-3 { padding-right: 0 !important; padding-left: 1rem !important; }
+html[dir='rtl'] .pl-4 { padding-left: 0 !important; padding-right: 1.5rem !important; }
+html[dir='rtl'] .pr-4 { padding-right: 0 !important; padding-left: 1.5rem !important; }
+html[dir='rtl'] .pl-5 { padding-left: 0 !important; padding-right: 3rem !important; }
+html[dir='rtl'] .pr-5 { padding-right: 0 !important; padding-left: 3rem !important; }
+
+/* Border-radius corners — flip rounded sides */
+html[dir='rtl'] .rounded-left  { border-radius: 0 .25rem .25rem 0 !important; }
+html[dir='rtl'] .rounded-right { border-radius: .25rem 0 0 .25rem !important; }
+
+/* AdminLTE treeview expand arrow — points left in LTR; must point right in RTL */
+html[dir='rtl'] .nav-sidebar .fa-angle-left { transform: scaleX(-1); }
+
+/* Breadcrumb divider. Bootstrap 4 builds this out of three physical
+   properties - `float: left`, `padding-left` on the item and `padding-right`
+   on the ::before - and flips none of them for RTL, so the separator floated to
+   the wrong side of its own item and jammed against the text with the padding
+   landing on the outside. All three have to mirror together.
+
+   The character stays '/'. It was '\005C' (a literal backslash), presumably an
+   attempt to mirror the glyph, but a reversed slash is not an RTL convention -
+   Bootstrap's own RTL build keeps the forward slash - and it read as a typo. */
+html[dir='rtl'] .breadcrumb-item + .breadcrumb-item { padding-left: 0; padding-right: .5rem; }
+html[dir='rtl'] .breadcrumb-item + .breadcrumb-item::before {
+  float: right;
+  padding-right: 0;
+  padding-left: .5rem;
+  content: '/';
+}
+
+/* Bootstrap 4 input-group: append/prepend swap sides visually in RTL.
+   The border-radius on the button must mirror too. */
+html[dir='rtl'] .input-group > .input-group-append:last-child > .btn,
+html[dir='rtl'] .input-group > .input-group-append:last-child > .input-group-text {
+  border-radius: .25rem 0 0 .25rem;
+}
+html[dir='rtl'] .input-group > .form-control:first-child,
+html[dir='rtl'] .input-group > .form-control:not(:last-child) {
+  border-radius: 0 .25rem .25rem 0;
+  border-left: 0;
+  border-right: 1px solid #ced4da;
+}
+html[dir='rtl'] .input-group > .input-group-append > .btn,
+html[dir='rtl'] .input-group > .input-group-append > .input-group-text {
+  border-right: 1px solid #ced4da;
+  border-left: 0;
+}
+
+/* AdminLTE .border-right used in description-blocks (monthly revenue) */
+html[dir='rtl'] .border-right { border-right: 0 !important; border-left: 1px solid #dee2e6 !important; }
+html[dir='rtl'] .border-left  { border-left: 0 !important; border-right: 1px solid #dee2e6 !important; }
+
+/* Page-header right column — col-sm-6 text-right holds breadcrumbs and
+   action buttons. In LTR these sit on the trailing edge; they must still
+   sit on the trailing edge in RTL, but the trailing edge is now the LEFT.
+   .text-right is already flipped to text-align:left above. */
+html[dir='rtl'] .content-header .col-sm-6.text-right { text-align: left !important; }
+
+/* Login / Register split layout: brand panel is always the first flex child
+   in markup, which means it stays on the LEFT in both directions unless we
+   swap the order. Reversing the row direction achieves the mirror without
+   touching the JSX. */
+html[dir='rtl'] .lms-auth-page { flex-direction: row-reverse; }
+
+/* Toast notifications sit in a fixed corner — ensure they stack from the
+   correct end in RTL. */
+html[dir='rtl'] .lms-toast-container { right: auto; left: 1rem; }
+
+/* The register page's role radios are visually replaced by the labels wrapping
+   them, so the input carries the focus but paints nothing. Draw the ring on the
+   label standing in for it, or keyboard users get no focus indication at all. */
+.lms-role-option:focus-within { outline: 2px solid #1a6fc4; outline-offset: 2px; }
